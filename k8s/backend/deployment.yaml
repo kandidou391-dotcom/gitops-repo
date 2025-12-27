@@ -1,32 +1,100 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pfe-backend-config
+  namespace: pfe
+data:
+  PORT: "5000"
+  MONGO_URI: "mongodb://mongo:27017/pfe"
+  AI_SERVICE_URL: "http://pfe-ai-service:6000"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: pfe-backend
+  namespace: pfe
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: backend
+      app: pfe-backend
   template:
     metadata:
       labels:
-        app: backend
+        app: pfe-backend
     spec:
       containers:
         - name: backend
-          image: my-backend-app:latest  # Replace with your Docker image tag
+          image: ghcr.io/kannou1/pfe-backend:latest
           ports:
             - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: pfe-backend-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: pfe-backend
+  namespace: pfe
 spec:
   selector:
-    app: backend
+    app: pfe-backend
   ports:
-    - protocol: TCP
+    - name: http
       port: 5000
       targetPort: 5000
-  type: LoadBalancer
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+  namespace: pfe
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: pfe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:7
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+      volumes:
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: mongo-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: pfe
+spec:
+  selector:
+    app: mongo
+  ports:
+    - name: mongo
+      port: 27017
+      targetPort: 27017
+  type: ClusterIP

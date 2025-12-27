@@ -1,32 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pfe
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pfe-frontend-config
+  namespace: pfe
+data:
+  # In-cluster backend URL (Service DNS)
+  REACT_APP_API_URL: "http://pfe-backend:5000"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: pfe-frontend
+  namespace: pfe
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: frontend
+      app: pfe-frontend
   template:
     metadata:
       labels:
-        app: frontend
+        app: pfe-frontend
     spec:
       containers:
         - name: frontend
-          image: my-frontend-app:latest  # Replace with your Docker image tag
+          image: ghcr.io/kannou1/pfe-frontend:latest
           ports:
             - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: pfe-frontend-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
+  name: pfe-frontend
+  namespace: pfe
 spec:
   selector:
-    app: frontend
+    app: pfe-frontend
   ports:
-    - protocol: TCP
+    - name: http
       port: 80
       targetPort: 80
-  type: LoadBalancer
+  type: ClusterIP

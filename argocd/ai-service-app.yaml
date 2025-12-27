@@ -1,16 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ai-service
+  name: pfe-ai-service
+  namespace: argocd
 spec:
+  project: default
+  source:
+    repoURL: https://github.com/kannou1/gitops-repo.git
+    targetRevision: main
+    path: k8s/ai-service
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
-  source:
-    repoURL: https://github.com/your-org/gitops-repo.git  # Replace with your GitOps repo URL
-    path: k8s/ai-service  # Path to AI service deployment manifest
-    targetRevision: HEAD
+    namespace: pfe
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
