@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/kannou1/gitops-repo.git
-    targetRevision: main
+repoURL: https://github.com/kandidou391-dotcom/gitops-repo.git    
+targetRevision: main
     path: k8s/ai-service
   destination:
     server: https://kubernetes.default.svc
