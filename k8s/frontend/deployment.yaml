@@ -25,7 +25,8 @@ spec:
         - name: ghcr-secret
       containers:
         - name: frontend
-          image: ghcr.io/kannou1/pfe-frontend:latest
+          # ✅ updated image namespace
+          image: ghcr.io/kandidou391-dotcom/pfe-frontend:latest
           ports:
             - containerPort: 80
           envFrom:
