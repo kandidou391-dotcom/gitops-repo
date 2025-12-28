@@ -1,3 +1,4 @@
+# ConfigMap for non-sensitive configuration
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,7 +7,9 @@ metadata:
 data:
   PORT: "5000"
   BACKEND_URL: "https://backendexpresslac-hv8i.onrender.com"
+
 ---
+# Secret for sensitive configuration
 apiVersion: v1
 kind: Secret
 metadata:
@@ -14,11 +17,14 @@ metadata:
   namespace: pfe
 type: Opaque
 data:
+  # Base64 encoded values
   MONGO_URI: bW9uZ29kYjovL2thbm5vdTprYW5ub3VAcGZlLm10aGhhcHkubW9uZ29kYi5uZXQv
   JWT_SECRET: MzY2YTJkMmZhZjIxZDc5MmNzYTE5MWRlYTkzOGVjZTlmMTdiZjk4MDJkYzkzNjQ3YTBlOTFlZTVlZWMxMjExMzdjYmNlM2IxMTk0ZjFmZjczNTAxOWI4ZmNiMWUzZjk4NTI5ZjQ3NmQ5NGZiYWZhZjM2ZjU5NTYzMDU1ODQ0
   EMAIL_USER: ZWR1bmV4c3lzdEBnbWFpbC5jb20=
   EMAIL_PASS: dmVremcgc2dkZyBybnhkIGVoeHc=
+
 ---
+# Deployment for backend
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -46,7 +52,9 @@ spec:
                 name: pfe-backend-config
             - secretRef:
                 name: pfe-backend-secret
+
 ---
+# Service for backend
 apiVersion: v1
 kind: Service
 metadata:
