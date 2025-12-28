@@ -5,7 +5,19 @@ metadata:
   namespace: pfe
 data:
   PORT: "5000"
-  AI_SERVICE_URL: "http://pfe-ai-service:7000"
+  BACKEND_URL: "https://backendexpresslac-hv8i.onrender.com"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pfe-backend-secret
+  namespace: pfe
+type: Opaque
+data:
+  MONGO_URI: bW9uZ29kYjovL2thbm5vdTprYW5ub3VAcGZlLm10aGhhcHkubW9uZ29kYi5uZXQv
+  JWT_SECRET: MzY2YTJkMmZhZjIxZDc5MmNzYTE5MWRlYTkzOGVjZTlmMTdiZjk4MDJkYzkzNjQ3YTBlOTFlZTVlZWMxMjExMzdjYmNlM2IxMTk0ZjFmZjczNTAxOWI4ZmNiMWUzZjk4NTI5ZjQ3NmQ5NGZiYWZhZjM2ZjU5NTYzMDU1ODQ0
+  EMAIL_USER: ZWR1bmV4c3lzdEBnbWFpbC5jb20=
+  EMAIL_PASS: dmVremcgc2dkZyBybnhkIGVoeHc=
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -26,13 +38,14 @@ spec:
         - name: ghcr-secret
       containers:
         - name: backend
-          # ✅ updated image namespace
           image: ghcr.io/kandidou391-dotcom/pfe-backend:latest
           ports:
             - containerPort: 5000
           envFrom:
             - configMapRef:
                 name: pfe-backend-config
+            - secretRef:
+                name: pfe-backend-secret
 ---
 apiVersion: v1
 kind: Service
