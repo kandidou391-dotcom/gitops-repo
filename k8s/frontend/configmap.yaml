@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pfe-frontend-config
+  namespace: pfe
+data:
+  # Replace <host-IP> with the public IP of your machine running Minikube
+  REACT_APP_API_URL: "http://192.168.49.2:30181"
