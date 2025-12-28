@@ -4,4 +4,4 @@ metadata:
   name: pfe-frontend-config
   namespace: pfe
 data:
-  REACT_APP_API_URL: "http://192.168.49.2:30181"  # backend NodePort
+  REACT_APP_API_URL: "http://192.168.102.138:30181"
