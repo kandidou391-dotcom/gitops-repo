@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pfe-backend-config
+  namespace: pfe
+data:
+  PORT: "5000"
+  BACKEND_URL: "https://backendexpresslac-hv8i.onrender.com"
