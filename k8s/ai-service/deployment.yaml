@@ -25,7 +25,8 @@ spec:
         - name: ghcr-secret
       containers:
         - name: ai-service
-          image: ghcr.io/kannou1/pfe-ai-service:latest
+          # ✅ updated image namespace
+          image: ghcr.io/kandidou391-dotcom/pfe-ai-service:latest
           ports:
             - containerPort: 6000
           envFrom:
